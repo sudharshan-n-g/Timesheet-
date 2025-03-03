@@ -111,7 +111,6 @@ python-statemachine==2.1.2
 pytweening==1.2.0
 pytz==2023.3.post1
 pyueye==4.96.952
-pywin32==306
 PyYAML==6.0.1
 rapidfuzz==3.9.5
 referencing==0.32.1
