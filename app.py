@@ -7,7 +7,8 @@ from flask_cors import CORS
 import os
 
 application = Flask(__name__)
-##CORS(application) 
+
+CORS(application) 
 #CORS(application, resources={r"/*": {"origins": "*"}}) # Enable CORS for frontend-backend communication
 #
 ## Start ngrok tunnel
