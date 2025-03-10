@@ -16,6 +16,10 @@ port = 8000  # Set the same port as Flask
 #public_url = ngrok.connect(port).public_url
 #print(f"Ngrok Tunnel URL: {public_url}")
 
+@application.route("/")
+def home():
+    return jsonify({"message": "Backend is running successfully!"})
+
 @application.route("/api/login", methods=["POST"])
 def login():
     data = request.json
