@@ -7,13 +7,11 @@ def employee_login(emp_name,emp_password):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_credentials"]
-    user = collection.find({"Username": emp_name,"Password": emp_password})
+    user = collection.find_one({"Username": emp_name})  
 
     if user and check_password_hash(user["Password"], emp_password):  # Verify hashed password
-        return {
-            "Username": user["Username"],
-            "message": "Login successful"
-        }
+        return {"Username": user["Username"], "message": "Login successful"}
+    
     else:
         return None
 
