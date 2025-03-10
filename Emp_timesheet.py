@@ -1,6 +1,21 @@
 import json
 from pymongo import MongoClient
 from mail import review_performance
+from werkzeug.security import check_password_hash
+
+def employee_login(emp_name,emp_password):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection = db["Employee_credentials"]
+    user = collection.find({"Username": emp_name,"Password": emp_password})
+
+    if user and check_password_hash(user["Password"], emp_password):  # Verify hashed password
+        return {
+            "Username": user["Username"],
+            "message": "Login successful"
+        }
+    else:
+        return None
 
 def get_manager_details(emp_name):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -102,3 +117,5 @@ def delete_emp(emp_name):
 #}
 #
 #add_AM_data(user_input_PM)
+
+#print(get_manager_details("Sudharshan"))
