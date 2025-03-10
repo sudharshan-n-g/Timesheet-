@@ -3,17 +3,17 @@ from pymongo import MongoClient
 from Emp_timesheet import add_PM_data, delete_emp, add_AM_data, employee_login
 from Emp_info import add_emp_info
 from flask_cors import CORS
-from pyngrok import ngrok
+#from pyngrok import ngrok
 import os
 
 application = Flask(__name__)
-#CORS(application) 
-CORS(application, resources={r"/*": {"origins": "*"}}) # Enable CORS for frontend-backend communication
-
-# Start ngrok tunnel
+##CORS(application) 
+#CORS(application, resources={r"/*": {"origins": "*"}}) # Enable CORS for frontend-backend communication
+#
+## Start ngrok tunnel
 port = 8000  # Set the same port as Flask
-public_url = ngrok.connect(port).public_url
-print(f"Ngrok Tunnel URL: {public_url}")
+#public_url = ngrok.connect(port).public_url
+#print(f"Ngrok Tunnel URL: {public_url}")
 
 @application.route("/api/login", methods=["POST"])
 def login():
