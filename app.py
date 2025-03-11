@@ -35,7 +35,7 @@ logging.basicConfig(level=logging.DEBUG)
 @application.route("/api/login", methods=["POST"])
 def login():
     data = request.json
-    username = data.get("username")
+    username = data.get("email")
     password = data.get("password")
 
     if not username or not password:
