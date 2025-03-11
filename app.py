@@ -50,25 +50,25 @@ def login():
 
 
 
-@application.route("/add_timesheet", methods=["POST"])
+@application.route("/api/timesheet", methods=["POST"])
 def add_AM_timesheet():
     data = request.json
     add_AM_data(data)
     return jsonify({"message": "Timesheet added successfully"})
 
-@application.route("/add_PM_timesheet", methods=["POST"])
+@application.route("/api/timesheet", methods=["POST"])
 def add_PM_timesheet():
     data = request.json
     add_PM_data(data)
     return jsonify({"message": "Timesheet added successfully"})
 
-@application.route("/delete_employee", methods=["DELETE"])
+@application.route("/api/delete_employee", methods=["DELETE"])
 def delete_employee():
     emp_name = request.json["employee_name"]
     delete_emp(emp_name)
     return jsonify({"message": "Employee deleted successfully"})
 
-@application.route("/add_employee", methods=["POST"])  # Fixed: Added missing route
+@application.route("/api/add_employee", methods=["POST"])  # Fixed: Added missing route
 def add_employee():
     emp_name = request.json
     add_emp_info(emp_name)
