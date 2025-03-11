@@ -27,10 +27,10 @@ def get_routes():
 
 logging.basicConfig(level=logging.DEBUG)
 
-@application.errorhandler(Exception)  # ✅ Capture all unhandled errors
-def handle_exception(e):
-    application.logger.error(f"Error: {e}", exc_info=True)
-    return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
+#@application.errorhandler(Exception)  # Capture all unhandled errors
+#def handle_exception(e):
+#    application.logger.error(f"Error: {e}", exc_info=True)
+#    return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
 @application.route("/api/login", methods=["POST"])
 def login():
