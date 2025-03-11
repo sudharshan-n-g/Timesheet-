@@ -3,6 +3,7 @@ from pymongo import MongoClient
 from Emp_timesheet import add_PM_data, delete_emp, add_AM_data, employee_login
 from Emp_info import add_emp_info
 from flask_cors import CORS
+import logging
 #from pyngrok import ngrok
 import os
 
@@ -23,6 +24,13 @@ def home():
 @application.route("/api/routes", methods=["GET"])
 def get_routes():
     return jsonify([str(rule) for rule in application.url_map.iter_rules()])
+
+logging.basicConfig(level=logging.DEBUG)
+
+@application.errorhandler(Exception)  # ✅ Capture all unhandled errors
+def handle_exception(e):
+    application.logger.error(f"Error: {e}", exc_info=True)
+    return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
 @application.route("/api/login", methods=["POST"])
 def login():
