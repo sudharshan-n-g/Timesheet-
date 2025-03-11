@@ -13,7 +13,7 @@ CORS(application)
 #CORS(application, resources={r"/*": {"origins": "*"}}) # Enable CORS for frontend-backend communication
 #
 ## Start ngrok tunnel
-port = 8000  # Set the same port as Flask
+#port = 8000  # Set the same port as Flask
 #public_url = ngrok.connect(port).public_url
 #print(f"Ngrok Tunnel URL: {public_url}")
 
@@ -75,4 +75,6 @@ def add_employee():
     return jsonify({"message": "Employee added successfully"})
 
 if __name__ == "__main__":
+    port = int(os.getenv("PORT", 8000))  
     application.run(host="0.0.0.0", port=port)
+    #application.run(host="0.0.0.0", port=port)
