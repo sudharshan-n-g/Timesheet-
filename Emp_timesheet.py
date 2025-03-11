@@ -7,9 +7,14 @@ def employee_login(emp_name,emp_password):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_credentials"]
-    user = collection.find_one({"Username": emp_name})  
+    user = collection.find_one({"Username": emp_name}) 
+    
+    #for data in user:
+    username = user["Username"]
+    password = user["Password"]
+    if username==emp_name and password==emp_password:
 
-    if user and check_password_hash(user["Password"], emp_password):  # Verify hashed password
+    #if user and check_password_hash(user["Password"], emp_password):  # Verify hashed password
         return {"Username": user["Username"], "message": "Login successful"}
     
     else:
@@ -117,3 +122,6 @@ def delete_emp(emp_name):
 #add_AM_data(user_input_PM)
 
 #print(get_manager_details("Sudharshan"))
+
+result = employee_login("bhargav","BNG")
+print(result)
