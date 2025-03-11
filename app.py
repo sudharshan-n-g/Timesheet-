@@ -20,6 +20,10 @@ port = 8000  # Set the same port as Flask
 def home():
     return jsonify({"message": "Backend is running successfully!"})
 
+@application.route("/api/routes", methods=["GET"])
+def get_routes():
+    return jsonify([str(rule) for rule in application.url_map.iter_rules()])
+
 @application.route("/api/login", methods=["POST"])
 def login():
     data = request.json
