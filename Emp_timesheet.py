@@ -48,28 +48,28 @@ def add_PM_data(data):
     db = client["Timesheet"]
     collection = db["Employee_PM"]
     hours_list = []
-    for hour, task in data.get("tasks", {}).items():
-        if task.get("description"):  # Ensure task is not empty
-            hours_list.append({
-                "hour": hour,  # Keep the original time format
-                "task": task["description"],
-                "progress": task.get("status", "").lower(),  # Default to empty if status is missing
-                "comments": task.get("comment", "")  # Default to empty string if no comment
-            })
-
-    # Format final data for MongoDB insertion
-    user_input = {
-        "employee_name": data.get("employee_name"),
-        "date": data.get("date"),
-        "hours": hours_list,  # Ensure hours are correctly populated
-        "country": data.get("country")
-    }
+    #for hour, task in data.get("tasks", {}).items():
+    #    if task.get("description"):  # Ensure task is not empty
+    #        hours_list.append({
+    #            "hour": hour,  # Keep the original time format
+    #            "task": task["description"],
+    #            "progress": task.get("status", "").lower(),  # Default to empty if status is missing
+    #            "comments": task.get("comment", "")  # Default to empty string if no comment
+    #        })
+#
+    ## Format final data for MongoDB insertion
+    #user_input = {
+    #    "employee_name": data.get("employee_name"),
+    #    "date": data.get("date"),
+    #    "hours": hours_list,  # Ensure hours are correctly populated
+    #    "country": data.get("country")
+    #}
 
     # Debugging output: Print data before inserting
-    print("Formatted Data Before Insertion:", user_input)
+    #print("Formatted Data Before Insertion:", data)
 
     # Insert into MongoDB
-    result = collection.insert_one(user_input)
+    result = collection.insert_one(data)
 
     
     
