@@ -79,7 +79,7 @@ def add_PM_data(data):
     
     #review_performance(user_input,manager,mail)
  
-    print(f"Data inserted with record id: {result.inserted_id}")
+   # print(f"Data inserted with record id: {result.inserted_id}")
 
 
 def add_AM_data(data):
