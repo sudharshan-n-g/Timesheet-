@@ -43,15 +43,38 @@ def get_manager_details(emp_name):
     return manager,mail
 
 
-def add_PM_data(user_input):
+def add_PM_data(data):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_PM"]
+    hours_list = []
+    for hour, task in data.get("tasks", {}).items():
+        if task.get("description"):  # Ensure task is not empty
+            hours_list.append({
+                "hour": hour,  # Keep the original time format
+                "task": task["description"],
+                "progress": task.get("status", "").lower(),  # Default to empty if status is missing
+                "comments": task.get("comment", "")  # Default to empty string if no comment
+            })
 
-    
+    # Format final data for MongoDB insertion
+    user_input = {
+        "employee_name": data.get("employee_name"),
+        "date": data.get("date"),
+        "hours": hours_list,  # Ensure hours are correctly populated
+        "country": data.get("country")
+    }
+
+    # Debugging output: Print data before inserting
+    print("Formatted Data Before Insertion:", user_input)
+
+    # Insert into MongoDB
     result = collection.insert_one(user_input)
 
-    emp_name = user_input["employee_name"]
+    
+    
+
+    #emp_name = user_input["employee_name"]
     #manager, mail = get_manager_details(emp_name)
     
     #review_performance(user_input,manager,mail)
