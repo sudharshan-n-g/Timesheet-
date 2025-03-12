@@ -52,9 +52,9 @@ def add_PM_data(user_input):
     result = collection.insert_one(user_input)
 
     emp_name = user_input["employee_name"]
-    manager, mail = get_manager_details(emp_name)
+    #manager, mail = get_manager_details(emp_name)
     
-    review_performance(user_input,manager,mail)
+    #review_performance(user_input,manager,mail)
  
     print(f"Data inserted with record id: {result.inserted_id}")
 
@@ -90,35 +90,35 @@ def delete_emp(emp_name):
     
 
 # Prompt the user for the timesheet JSON
-#user_input_PM = {
-#  "employee_name": "Sudharshan",
-#  "date": "2025-02-20",
-#  "hours": [
-#    {
-#      "hour": "08:00-09:00",
-#      "task": "Annotations",
-#      "progress": "green",
-#      "comments": "Completed successfully"
-#      
-#    },
-#    {
-#      "hour": "09:00-10:00",
-#      "task": "Model building and training",
-#      "progress": "yellow",
-#      "comments": "In progress"
-#    },
-#    {
-#      "hour": "10:00-11:00",
-#      "task": "Model testing",
-#      "progress": "red",
-#      "comments": "Blocked by dependencies"
-#    }
-#  ],
+user_input_PM = {
+  "employee_name": "Sudharshan",
+  "date": "2025-02-20",
+  "hours": [
+    {
+      "hour": "08:00-09:00",
+      "task": "Annotations",
+      "progress": "green",
+      "comments": "Completed successfully"
+      
+    },
+    {
+      "hour": "09:00-10:00",
+      "task": "Model building and training",
+      "progress": "yellow",
+      "comments": "In progress"
+    },
+    {
+      "hour": "10:00-11:00",
+      "task": "Model testing",
+      "progress": "red",
+      "comments": "Blocked by dependencies"
+    }
+  ]
 #  "Performance of the Day" : "green",
 #  "First Time Quality" : "red",
 #  "On-Time Delivery" : "red",
 #  "Engagement and Support" : "red"
-#}
+}
 #
 #user_input_AM = {
 #  "employee_name": "Sudharshan",
@@ -139,7 +139,7 @@ def delete_emp(emp_name):
 #  ]
 #}
 #
-#add_AM_data(user_input_PM)
+add_PM_data(user_input_PM)
 
 #print(get_manager_details("Sudharshan"))
 
