@@ -50,13 +50,13 @@ def login():
 
 
 
-@application.route("/api/timesheet", methods=["POST"])
+@application.route("/api/AM/timesheet", methods=["POST"])
 def add_AM_timesheet():
     data = request.json
     add_AM_data(data)
     return jsonify({"message": "Timesheet added successfully"})
 
-@application.route("/api/timesheet", methods=["POST"])
+@application.route("/api/PM/timesheet", methods=["POST"])
 def add_PM_timesheet():
     data = request.json
     add_PM_data(data)
