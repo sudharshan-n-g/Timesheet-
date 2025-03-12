@@ -59,6 +59,7 @@ def add_AM_timesheet():
 @application.route("/api/PM", methods=["POST"])
 def add_PM_timesheet():
     data = request.json
+    print(data)
     add_PM_data(data)
     return jsonify({"message": "Timesheet added successfully"})
 
