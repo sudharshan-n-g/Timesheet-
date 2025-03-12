@@ -44,6 +44,7 @@ def get_manager_details(emp_name):
 
 
 def add_PM_data(data):
+    print(data)
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_PM"]
