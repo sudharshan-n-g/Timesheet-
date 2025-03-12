@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
-from Emp_timesheet import add_PM_data, delete_emp, add_AM_data, employee_login
+from Emp_timesheet import add_PM_data, delete_emp, add_AM_data, employee_login,add_new_user
 from Emp_info import add_emp_info
 from flask_cors import CORS
 import logging
@@ -60,6 +60,12 @@ def add_AM_timesheet():
 def add_PM_timesheet():
     data = request.json
     add_PM_data(data)
+    return jsonify({"message": "Timesheet added successfully"})
+
+@application.route("/api/create_user", methods=["POST"])
+def add_new_user():
+    data = request.json
+    add_new_user(data)
     return jsonify({"message": "Timesheet added successfully"})
 
 @application.route("/api/delete_employee", methods=["DELETE"])

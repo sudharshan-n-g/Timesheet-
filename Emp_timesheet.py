@@ -3,6 +3,16 @@ from pymongo import MongoClient
 from mail import review_performance
 from werkzeug.security import check_password_hash
 
+def add_new_user(user_input):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection_emp = db["Employee_credentials"]
+    collection_admin = db["Admin_credentials"]
+    if user_input["role"] == "admin":
+        result = collection_admin.insert_one(user_input)
+    else:
+        result = collection_emp.insert_one(user_input)
+
 def employee_login(emp_name,emp_password):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
@@ -49,13 +59,23 @@ def add_PM_data(user_input):
     print(f"Data inserted with record id: {result.inserted_id}")
 
 
-def add_AM_data(user_input):
+def add_AM_data(data):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-    print("connected")
+    #print("connected")
     db = client["Timesheet"]
     collection = db["Employee_AM"]
-    
-    result = collection.insert_one(user_input)
+    formatted_hours = [
+        {"hour": hour, "task": details["description"]}
+        for hour, details in data.get("tasks", {}).items() if details["description"]
+    ]
+
+    # Create the final formatted document
+    formatted_data = {
+        "employee_name": data.get("employee_name"),
+        "date": data.get("date"),
+        "hours": formatted_hours
+    }
+    result = collection.insert_one(formatted_data)
     print(f"Data inserted with record id: {result.inserted_id}")
 
 def delete_emp(emp_name):
