@@ -45,9 +45,12 @@ def employee_login(emp_name,emp_password):
     username = user["Username"]
     password = user["Password"]
     if username==emp_name and password==emp_password:
-
+        if username=="admin":
     #if user and check_password_hash(user["Password"], emp_password):  # Verify hashed password
-        return {"Username": user["Username"], "message": "Login successful"}
+            return {"Username": user["Username"], "message": "Admin login successful"}
+        else:
+            return {"Username":user["Username"],"message":"Login successful"}
+    
     
     else:
         return None
@@ -63,41 +66,6 @@ def get_manager_details(emp_name):
         manager = value["managerName"]
         mail = value["managerEmail"]
     return manager,mail
-
-
-def add_PM_data(data):
-    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-    db = client["Timesheet"]
-    collection = db["Employee_PM"]
-
-    transformed_data = transform_timesheet(data)  # Ensure data is in correct format
-    
-    # Determine shift based on the first timing
-    first_hour = next(
-    (hour for hour, details in input_data["hours"].items() if details.get("description")), 
-    None  # Default to None if all are empty
-)
-    print(first_hour )
-    shift = "USD" if first_hour == "8:00 AM" else "IND" if first_hour == "11:00 AM" else "Unknown"
-
-    # Add shift information to the data
-    transformed_data["shift"] = shift
-
-    filter_condition = {
-        "employee_name": transformed_data["employee_name"],
-        "date": transformed_data["date"]
-    }
-
-    # Use update_one with $set to overwrite the existing data or insert if not found
-    result = collection.update_one(
-        filter_condition, 
-        {"$set": transformed_data}, 
-        upsert=True  
-    )
-
-    print(f"Shift set to: {shift}")
-    print("Timesheet updated." if result.matched_count > 0 else "New timesheet inserted.")
-
 
 
 def add_AM_data(data):
@@ -131,6 +99,56 @@ def add_AM_data(data):
     # Insert into MongoDB
     result = collection.insert_one(formatted_data)
     print(f"AM Data inserted with record id: {result.inserted_id}")
+
+def add_PM_data(data):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection = db["Employee_PM"]
+
+    # Extract the first valid hour
+    first_pm_hour = next(
+        (hour for hour, details in data.get("hours", {}).items() if details.get("description")),
+        None
+    )
+
+    # Determine shift based on first valid hour
+    shift = "USD" if first_pm_hour and first_pm_hour.startswith("8") else "IND"
+
+    # Format hours list
+    formatted_hours = [
+        {
+            "hour": hour,
+            "task": details["description"],
+            "progress": details.get("status", "green").lower(),
+            "comments": details.get("comment", "")
+        }
+        for hour, details in data.get("hours", {}).items() if details.get("description")
+    ]
+
+    # Create the final formatted document
+    formatted_data = {
+        "employee_name": data.get("employee_name"),
+        "date": data.get("date"),
+        "hours": formatted_hours,
+        "shift": shift,  # Add shift field
+        "country": data.get("country")
+    }
+
+    # Insert into MongoDB (Overwrite if employee & date exist)
+    filter_condition = {
+        "employee_name": formatted_data["employee_name"],
+        "date": formatted_data["date"]
+    }
+    result = collection.update_one(
+        filter_condition, 
+        {"$set": formatted_data}, 
+        upsert=True  # Overwrite if exists, insert if not
+    )
+
+    if result.matched_count > 0:
+        print(f"Updated existing PM data for {formatted_data['employee_name']} on {formatted_data['date']}")
+    else:
+        print(f"Inserted new PM data for {formatted_data['employee_name']} on {formatted_data['date']}")
 
 def performance_matrices(email, date, ratings):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
