@@ -33,6 +33,22 @@ logging.basicConfig(level=logging.DEBUG)
 #    application.logger.error(f"Error: {e}", exc_info=True)
 #    return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
+# @application.route("/api/login", methods=["POST"])
+# def login():
+#     data = request.json
+#     username = data.get("email")
+#     password = data.get("password")
+
+#     if not username or not password:
+#         return jsonify({"error": "Username and password are required"}), 400
+
+#     user_data = employee_login(username, password)  # Check credentials
+
+#     if user_data:
+#         return jsonify({"user": user_data, "message": "Login successful"}), 200
+#     else:
+#         return jsonify({"error": "Invalid username or password"}), 401
+
 @application.route("/api/login", methods=["POST"])
 def login():
     data = request.json
@@ -45,7 +61,10 @@ def login():
     user_data = employee_login(username, password)  # Check credentials
 
     if user_data:
-        return jsonify({"user": user_data, "message": "Login successful"}), 200
+        if username =="admin":
+            return jsonify({"user": user_data, "message": "Admin login successful"}), 200
+        else:
+            return jsonify({"user": user_data, "message": "Login successful"}), 200
     else:
         return jsonify({"error": "Invalid username or password"}), 401
 
