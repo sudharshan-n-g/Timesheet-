@@ -135,7 +135,7 @@ def performance_matrices(email, date, ratings):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_PM"]
-    
+    print(ratings)
 
     # Update the document where email and date match
     result = collection.update_one(
