@@ -75,8 +75,8 @@ def delete_employee():
     delete_emp(emp_name)
     return jsonify({"message": "Employee deleted successfully"})
 
-@app.route("/api/update_ratings", methods=["POST"])
-def update_ratings():
+@application.route("/api/matrices", methods=["POST"])
+def matrices():
     data = request.json
     email = data.get("email")
     date = data.get("date")
