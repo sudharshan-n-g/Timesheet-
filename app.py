@@ -1,9 +1,10 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
-from Emp_timesheet import add_PM_data, delete_emp, add_AM_data, employee_login,add_new_user,performance_matrices
+from Emp_timesheet import add_PM_data, add_AM_data, employee_login,performance_matrices
 from Emp_info import add_emp_info
 from flask_cors import CORS
 import logging
+from admin import add_new_user,delete_emp,get_emp_data
 #from pyngrok import ngrok
 import os
 
@@ -75,19 +76,27 @@ def delete_employee():
     delete_emp(emp_name)
     return jsonify({"message": "Employee deleted successfully"})
 
-@application.route("/api/matrices", methods=["POST"])
-def matrices():
+@app.route("/api/matrices", methods=["POST"])
+def update_ratings():
     data = request.json
     email = data.get("email")
     date = data.get("date")
     ratings = data.get("ratings")
     performance_matrices(email, date, ratings)
+    return jsonify({"message": "Performance matrices updated successfully"})
 
 @application.route("/api/add_employee", methods=["POST"])  # Fixed: Added missing route
 def add_employee():
     emp_name = request.json
     add_emp_info(emp_name)
     return jsonify({"message": "Employee added successfully"})
+
+@application.route("/api/get_employee", methods=["POST"])  # Fixed: Added missing route
+def get_emp_data():
+    emp_name = request.json
+    date = request.json
+    data = get_emp_data(emp_name,date)
+    return jsonify({"message": "Employee data fetched successfully", "data": data})
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))  

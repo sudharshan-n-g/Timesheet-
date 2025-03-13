@@ -3,6 +3,8 @@ from pymongo import MongoClient
 from mail import review_performance
 from werkzeug.security import check_password_hash
 
+
+
 def convert_to_time_range(time_str):
     from datetime import datetime, timedelta
     
@@ -32,15 +34,6 @@ def transform_timesheet(data):
 
     return transformed_data
 
-def add_new_user(user_input):
-    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-    db = client["Timesheet"]
-    collection_emp = db["Employee_credentials"]
-    collection_admin = db["Admin_credentials"]
-    if user_input["role"] == "admin":
-        result = collection_admin.insert_one(user_input)
-    else:
-        result = collection_emp.insert_one(user_input)
 
 def employee_login(emp_name,emp_password):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -76,60 +69,68 @@ def add_PM_data(data):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_PM"]
-    hours_list = []
-    transformed_data = transform_timesheet(data)
-    #for hour, task in data.get("tasks", {}).items():
-    #    if task.get("description"):  # Ensure task is not empty
-    #        hours_list.append({
-    #            "hour": hour,  # Keep the original time format
-    #            "task": task["description"],
-    #            "progress": task.get("status", "").lower(),  # Default to empty if status is missing
-    #            "comments": task.get("comment", "")  # Default to empty string if no comment
-    #        })
-#
-    ## Format final data for MongoDB insertion
-    #user_input = {
-    #    "employee_name": data.get("employee_name"),
-    #    "date": data.get("date"),
-    #    "hours": hours_list,  # Ensure hours are correctly populated
-    #    "country": data.get("country")
-    #}
 
-    # Debugging output: Print data before inserting
-    #print("Formatted Data Before Insertion:", data)
-
-    # Insert into MongoDB
-    result = collection.insert_one(transformed_data)
-
+    transformed_data = transform_timesheet(data)  # Ensure data is in correct format
     
-    
+    # Determine shift based on the first timing
+    first_hour = next(
+    (hour for hour, details in input_data["hours"].items() if details.get("description")), 
+    None  # Default to None if all are empty
+)
+    print(first_hour )
+    shift = "USD" if first_hour == "8:00 AM" else "IND" if first_hour == "11:00 AM" else "Unknown"
 
-    #emp_name = user_input["employee_name"]
-    #manager, mail = get_manager_details(emp_name)
-    
-    #review_performance(user_input,manager,mail)
- 
-   # print(f"Data inserted with record id: {result.inserted_id}")
+    # Add shift information to the data
+    transformed_data["shift"] = shift
+
+    filter_condition = {
+        "employee_name": transformed_data["employee_name"],
+        "date": transformed_data["date"]
+    }
+
+    # Use update_one with $set to overwrite the existing data or insert if not found
+    result = collection.update_one(
+        filter_condition, 
+        {"$set": transformed_data}, 
+        upsert=True  
+    )
+
+    print(f"Shift set to: {shift}")
+    print("Timesheet updated." if result.matched_count > 0 else "New timesheet inserted.")
+
 
 
 def add_AM_data(data):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-    #print("connected")
     db = client["Timesheet"]
     collection = db["Employee_AM"]
+
+    # Extract the first valid hour
+    first_am_hour = next(
+        (hour for hour, details in data.get("hours", {}).items() if details.get("description")),
+        None
+    )
+
+    # Determine shift based on first valid hour
+    shift = "USD" if first_am_hour and first_am_hour.startswith("8") else "IND"
+
+    # Format hours list
     formatted_hours = [
         {"hour": hour, "task": details["description"]}
-        for hour, details in data.get("tasks", {}).items() if details["description"]
+        for hour, details in data.get("hours", {}).items() if details["description"]
     ]
 
     # Create the final formatted document
     formatted_data = {
         "employee_name": data.get("employee_name"),
         "date": data.get("date"),
-        "hours": formatted_hours
+        "hours": formatted_hours,
+        "shift": shift  # Add shift field
     }
+
+    # Insert into MongoDB
     result = collection.insert_one(formatted_data)
-    print(f"Data inserted with record id: {result.inserted_id}")
+    print(f"AM Data inserted with record id: {result.inserted_id}")
 
 def performance_matrices(email, date, ratings):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -149,15 +150,7 @@ def performance_matrices(email, date, ratings):
 
     
 
-def delete_emp(emp_name):
-    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-    db = client["Timesheet"]
-    collection = db["Employee_data"]
-    collection_AM =db["Employee_AM"]
-    collection_PM =db["Employee_PM"]
-    result = collection.delete_one({"employee_name": emp_name})
-    collection_AM.delete_many({"employee_name": emp_name})
-    collection_PM.delete_many({"employee_name": emp_name})
+
     
 
 # Prompt the user for the timesheet JSON
@@ -213,7 +206,7 @@ def delete_emp(emp_name):
 
 #input_data = {
 #    "employee_name": "bhargav",
-#    "date": "2025-03-12",
+#    "date": "2025-03-13",
 #    "hours": {
 #        "8:00 AM": {"description": "AUGMENTATION", "status": "Green"},
 #        "9:00 AM": {"description": "MODEL BUILDING ", "comment": "NOT COMPLETED", "status": "Red"},
@@ -228,11 +221,15 @@ def delete_emp(emp_name):
 #    },
 #    "country": "USA"
 #}
-#add_PM_data(input_data)
+
+#input = {'employee_name': 'bhargav', 'date': '2025-03-12',
+#          'hours': {'8:00 AM': {'description': 'AUGMENTATION', 'status': 'Green'}, '9:00 AM': {'description': 'MODEL BUILDING ', 'comment': 'NOT COMPLETED', 'status': 'Red'}, '10:00 AM': {'description': ''}, '11:00 AM': {'description': ''}, '12:00 PM': {'description': ''}, '1:00 PM': {'description': ''}, '2:00 PM': {'description': ''}, '3:00 PM': {'description': ''}, '4:00 PM': {'description': ''}, '5:00 PM': {'description': ''}}}
+#
+#
+#add_AM_data(input)
 
 #print(get_manager_details("Sudharshan"))
 
 #result = employee_login("bhargav","BNG")
 #print(result)
 
-#performance_matrices("Sudharshan","2025-02-20",{"Performance of the Day": "green", "First Time Quality": "red", "On-Time Delivery": "red", "Engagement and Support": "red"})
