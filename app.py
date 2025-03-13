@@ -33,22 +33,6 @@ logging.basicConfig(level=logging.DEBUG)
 #    application.logger.error(f"Error: {e}", exc_info=True)
 #    return jsonify({"error": "Internal Server Error", "message": str(e)}), 500
 
-# @application.route("/api/login", methods=["POST"])
-# def login():
-#     data = request.json
-#     username = data.get("email")
-#     password = data.get("password")
-
-#     if not username or not password:
-#         return jsonify({"error": "Username and password are required"}), 400
-
-#     user_data = employee_login(username, password)  # Check credentials
-
-#     if user_data:
-#         return jsonify({"user": user_data, "message": "Login successful"}), 200
-#     else:
-#         return jsonify({"error": "Invalid username or password"}), 401
-
 @application.route("/api/login", methods=["POST"])
 def login():
     data = request.json
@@ -83,16 +67,16 @@ def add_PM_timesheet():
     add_PM_data(data)
     return jsonify({"message": "Timesheet added successfully"})
 
-@application.route("/api/create_user", methods=["POST"])
+@application.route("/api/users", methods=["POST"])
 def add_new_user():
     data = request.json
     add_new_user(data)
     return jsonify({"message": "Timesheet added successfully"})
 
-@application.route("/api/delete_employee", methods=["DELETE"])
-def delete_employee():
-    emp_name = request.json["employee_name"]
-    delete_emp(emp_name)
+@application.route("/api/users/email/<string:email>", methods=["DELETE"])
+def delete_user(email):
+    
+    delete_emp(email)
     return jsonify({"message": "Employee deleted successfully"})
 
 @application.route("/api/matrices", methods=["POST"])
@@ -110,11 +94,9 @@ def add_employee():
     add_emp_info(emp_name)
     return jsonify({"message": "Employee added successfully"})
 
-@application.route("/api/get_employee", methods=["POST"])  # Fixed: Added missing route
-def get_emp_data():
-    emp_name = request.json
-    date = request.json
-    data = get_emp_data(emp_name,date)
+@application.route("/api/timesheet/user/<string:username>/<string:date>", methods=["GET"])
+def get_timesheet(username, date):
+    data = get_emp_data(username,date)
     return jsonify({"message": "Employee data fetched successfully", "data": data})
 
 if __name__ == "__main__":
