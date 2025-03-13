@@ -68,7 +68,7 @@ def add_PM_timesheet():
     return jsonify({"message": "Timesheet added successfully"})
 
 @application.route("/api/users", methods=["POST"])
-def add_new_user():
+def new_users():
     data = request.json
     add_new_user(data)
     return jsonify({"message": "Timesheet added successfully"})
