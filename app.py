@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
-from Emp_timesheet import add_PM_data, delete_emp, add_AM_data, employee_login,add_new_user
+from Emp_timesheet import add_PM_data, delete_emp, add_AM_data, employee_login,add_new_user,performance_matrices
 from Emp_info import add_emp_info
 from flask_cors import CORS
 import logging
@@ -74,6 +74,14 @@ def delete_employee():
     emp_name = request.json["employee_name"]
     delete_emp(emp_name)
     return jsonify({"message": "Employee deleted successfully"})
+
+@app.route("/api/update_ratings", methods=["POST"])
+def update_ratings():
+    data = request.json
+    email = data.get("email")
+    date = data.get("date")
+    ratings = data.get("ratings")
+    performance_matrices(email, date, ratings)
 
 @application.route("/api/add_employee", methods=["POST"])  # Fixed: Added missing route
 def add_employee():
