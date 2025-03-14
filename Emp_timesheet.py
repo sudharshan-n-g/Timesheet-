@@ -55,18 +55,31 @@ def employee_login(emp_name,emp_password):
     else:
         return None
 
+# def get_manager_details(emp_name):
+#     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+#     db = client["Timesheet"]
+#     collection = db["Employee_data"]
+
+#     data = collection.find({"fullName":emp_name})
+
+#     for value in data:
+#         manager = value["managerName"]
+#         mail = value["managerEmail"]
+#     return manager,mail
+
 def get_manager_details(emp_name):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_data"]
 
-    data = collection.find({"fullName":emp_name})
+    data = collection.find_one({"name": emp_name})
 
-    for value in data:
-        manager = value["managerName"]
-        mail = value["managerEmail"]
-    return manager,mail
-
+    if data:
+        return data.get("manager"), data.get("manager_email")
+    else:
+        print(f"No manager found for employee: {emp_name}")
+        return None, None  # Handle the case where no manager data is found
+    
 
 def add_AM_data(data):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -154,6 +167,22 @@ def add_PM_data(data):
     else:
         print(f"Inserted new PM data for {formatted_data['employee_name']} on {formatted_data['date']}")
 
+# def performance_matrices(email, date, ratings):
+#     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+#     db = client["Timesheet"]
+#     collection = db["Employee_PM"]
+#     print(ratings)
+
+#     # Update the document where email and date match
+#     result = collection.update_one(
+#         {"employee_name": email, "date": date},  # Match condition
+#         {"$set": {"ratings": ratings}}  # Update or insert the ratings field
+#     )
+#     emp_name = email
+#     manager, mail = get_manager_details(emp_name)
+#     user_input = collection.find_one({"employee_name": email, "date": date})
+#     review_performance(user_input,manager,mail)
+
 def performance_matrices(email, date, ratings):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
@@ -165,12 +194,23 @@ def performance_matrices(email, date, ratings):
         {"employee_name": email, "date": date},  # Match condition
         {"$set": {"ratings": ratings}}  # Update or insert the ratings field
     )
+
+    if result.matched_count == 0:
+        print(f"Warning: No matching document found for {email} on {date}. Insert operation might be needed.")
+
     emp_name = email
     manager, mail = get_manager_details(emp_name)
-    user_input = collection.find_one({"employee_name": email, "date": date})
-    review_performance(user_input,manager,mail)
 
-    
+    if manager and mail:  # Ensure manager and email exist before proceeding
+        user_input = collection.find_one({"employee_name": email, "date": date})
+        if user_input:
+            review_performance(user_input, manager, mail)
+        else:
+            print("Error: Could not retrieve updated employee data.")
+    else:
+        print("Error: Manager details missing, cannot proceed with performance review.")
+
+    return {"message": "Performance data updated successfully"}
 
 
 
