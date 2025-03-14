@@ -73,19 +73,22 @@ def add_AM_data(data):
     db = client["Timesheet"]
     collection = db["Employee_AM"]
 
-    # Extract the first valid hour
+    # Extract the first valid hour from "tasks" (not "hours")
     first_am_hour = next(
-        (hour for hour, details in data.get("hours", {}).items() if details.get("description")),
+        (hour for hour, details in data.get("tasks", {}).items() if details.get("description")),
         None
     )
 
     # Determine shift based on first valid hour
-    shift = "USD" if first_am_hour and first_am_hour.startswith("8") else "IND"
+    if first_am_hour:
+        shift = "USD" if first_am_hour.startswith("8") else "IND"
+    else:
+        shift = "UNKNOWN"  # Default shift if no valid hour is found
 
     # Format hours list
     formatted_hours = [
         {"hour": hour, "task": details["description"]}
-        for hour, details in data.get("hours", {}).items() if details["description"]
+        for hour, details in data.get("tasks", {}).items() if details["description"]
     ]
 
     # Create the final formatted document
@@ -99,6 +102,7 @@ def add_AM_data(data):
     # Insert into MongoDB
     result = collection.insert_one(formatted_data)
     print(f"AM Data inserted with record id: {result.inserted_id}")
+
 
 def add_PM_data(data):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -169,85 +173,4 @@ def performance_matrices(email, date, ratings):
     
 
 
-    
-
-# Prompt the user for the timesheet JSON
-#user_input_PM = {
-#  "employee_name": "Sudharshan",
-#  "date": "2025-02-20",
-#  "hours": [
-#    {
-#      "hour": "08:00-09:00",
-#      "task": "Annotations",
-#      "progress": "green",
-#      "comments": "Completed successfully"
-#      
-#    },
-#    {
-#      "hour": "09:00-10:00",
-#      "task": "Model building and training",
-#      "progress": "yellow",
-#      "comments": "In progress"
-#    },
-#    {
-#      "hour": "10:00-11:00",
-#      "task": "Model testing",
-#      "progress": "red",
-#      "comments": "Blocked by dependencies"
-#    }
-#  ]
-#  "Performance of the Day" : "green",
-#  "First Time Quality" : "red",
-#  "On-Time Delivery" : "red",
-#  "Engagement and Support" : "red"
-#}
-#
-#user_input_AM = {
-#  "employee_name": "Sudharshan",
-#  "date": "2025-02-20",
-#  "hours": [
-#    {
-#      "hour": "08:00-09:00",
-#      "task": "Annotations"
-#    },
-#    {
-#      "hour": "09:00-10:00",
-#      "task": "Model building and training"
-#    },
-#    {
-#      "hour": "10:00-11:00",
-#      "task": "Model testing"
-#    }
-#  ]
-#}
-#
-
-#input_data = {
-#    "employee_name": "bhargav",
-#    "date": "2025-03-13",
-#    "hours": {
-#        "8:00 AM": {"description": "AUGMENTATION", "status": "Green"},
-#        "9:00 AM": {"description": "MODEL BUILDING ", "comment": "NOT COMPLETED", "status": "Red"},
-#        "10:00 AM": {"description": ""},
-#        "11:00 AM": {"description": ""},
-#        "12:00 PM": {"description": ""},
-#        "1:00 PM": {"description": ""},
-#        "2:00 PM": {"description": ""},
-#        "3:00 PM": {"description": ""},
-#        "4:00 PM": {"description": ""},
-#        "5:00 PM": {"description": ""}
-#    },
-#    "country": "USA"
-#}
-
-#input = {'employee_name': 'bhargav', 'date': '2025-03-12',
-#          'hours': {'8:00 AM': {'description': 'AUGMENTATION', 'status': 'Green'}, '9:00 AM': {'description': 'MODEL BUILDING ', 'comment': 'NOT COMPLETED', 'status': 'Red'}, '10:00 AM': {'description': ''}, '11:00 AM': {'description': ''}, '12:00 PM': {'description': ''}, '1:00 PM': {'description': ''}, '2:00 PM': {'description': ''}, '3:00 PM': {'description': ''}, '4:00 PM': {'description': ''}, '5:00 PM': {'description': ''}}}
-#
-#
-#add_AM_data(input)
-
-#print(get_manager_details("Sudharshan"))
-
-#result = employee_login("bhargav","BNG")
-#print(result)
 
