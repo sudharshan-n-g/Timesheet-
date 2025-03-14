@@ -81,41 +81,84 @@ def get_manager_details(emp_name):
         return None, None  # Handle the case where no manager data is found
     
 
+# def add_AM_data(data):
+#     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+#     db = client["Timesheet"]
+#     collection = db["Employee_AM"]
+
+#     # Extract the first valid hour from "tasks" (not "hours")
+#     first_am_hour = next(
+#         (hour for hour, details in data.get("tasks", {}).items() if details.get("description")),
+#         None
+#     )
+
+#     # Determine shift based on first valid hour
+#     if first_am_hour:
+#         shift = "USD" if first_am_hour.startswith("8") else "IND"
+#     else:
+#         shift = "UNKNOWN"  # Default shift if no valid hour is found
+
+#     # Format hours list
+#     formatted_hours = [
+#         {"hour": hour, "task": details["description"]}
+#         for hour, details in data.get("tasks", {}).items() if details["description"]
+#     ]
+
+#     # Create the final formatted document
+#     formatted_data = {
+#         "employee_name": data.get("employee_name"),
+#         "date": data.get("date"),
+#         "hours": formatted_hours,
+#         "shift": shift  # Add shift field
+#     }
+
+#     # Insert into MongoDB
+#     result = collection.insert_one(formatted_data)
+#     print(f"AM Data inserted with record id: {result.inserted_id}")
+
+
 def add_AM_data(data):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_AM"]
 
-    # Extract the first valid hour from "tasks" (not "hours")
+    # Extract the first valid hour from "tasks"
     first_am_hour = next(
         (hour for hour, details in data.get("tasks", {}).items() if details.get("description")),
         None
     )
 
     # Determine shift based on first valid hour
-    if first_am_hour:
-        shift = "USD" if first_am_hour.startswith("8") else "IND"
-    else:
-        shift = "UNKNOWN"  # Default shift if no valid hour is found
+    shift = "USD" if first_am_hour and first_am_hour.startswith("8") else "IND"
 
     # Format hours list
     formatted_hours = [
         {"hour": hour, "task": details["description"]}
-        for hour, details in data.get("tasks", {}).items() if details["description"]
+        for hour, details in data.get("tasks", {}).items() if details.get("description")
     ]
 
-    # Create the final formatted document
-    formatted_data = {
+    # Define filter to check if the entry already exists
+    filter_condition = {
         "employee_name": data.get("employee_name"),
-        "date": data.get("date"),
-        "hours": formatted_hours,
-        "shift": shift  # Add shift field
+        "date": data.get("date")
     }
 
-    # Insert into MongoDB
-    result = collection.insert_one(formatted_data)
-    print(f"AM Data inserted with record id: {result.inserted_id}")
+    # Define the update operation
+    update_data = {
+        "$set": {
+            "hours": formatted_hours,
+            "shift": shift  # Add or update the shift field
+        }
+    }
 
+    # Update existing entry or insert new one
+    result = collection.update_one(filter_condition, update_data, upsert=True)
+
+    # Log the action taken
+    if result.matched_count > 0:
+        print(f"AM Data updated for {data.get('employee_name')} on {data.get('date')}")
+    else:
+        print(f"AM Data inserted for {data.get('employee_name')} on {data.get('date')}")
 
 # def add_PM_data(data):
 #     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
