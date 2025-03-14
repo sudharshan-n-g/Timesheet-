@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
-from Emp_timesheet import add_PM_data, add_AM_data, employee_login,performance_matrices
+from Emp_timesheet import add_PM_data, add_AM_data, employee_login,performance_matrices, get_latest_employee_am_data
 from Emp_info import add_emp_info
 from flask_cors import CORS
 import logging
@@ -98,6 +98,22 @@ def add_employee():
 def get_timesheet(username, date):
     data = get_emp_data(username,date)
     return jsonify({"message": "Employee data fetched successfully", "data": data})
+
+@application.route("/api/timesheet/user/<string:username>/<string:date>", methods=["GET"])
+def get_user_timesheet(username, date):
+    """
+    Fetch timesheet data for a specific user and date.
+    """
+    try:
+        # Convert the date string to the expected format
+        timesheet_entry = get_latest_employee_am_data(username)
+        if timesheet_entry:
+            return jsonify({"success": True, "data": timesheet_entry}), 200
+        else:
+            return jsonify({"success": False, "message": "No timesheet found"}), 404
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))  

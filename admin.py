@@ -4,11 +4,11 @@ from mail import review_performance
 from werkzeug.security import check_password_hash
 from datetime import datetime
 
-def add_new_user(user_input):
-    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
-    db = client["Timesheet"]
-    collection_emp = db["Employee_data"]    
-    result = collection_emp.insert_one(user_input)
+# def add_new_user(user_input):
+#     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+#     db = client["Timesheet"]
+#     collection_emp = db["Employee_data"]    
+#     result = collection_emp.insert_one(user_input)
 
 def delete_emp(emp_name):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -35,5 +35,12 @@ def get_emp_data(emp_name,date):
     return emp_data
 
 
-
+def add_new_user(user_input):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection_emp = db["Employee_data"]    
+    collection_credential = db["Employee_credentials"]
+    user_credential = { "Username": user_input["name"], "Password": user_input["password"] }
+    collection_emp.insert_one(user_credential)
+    collection_credential.insert_one(user_input)
 

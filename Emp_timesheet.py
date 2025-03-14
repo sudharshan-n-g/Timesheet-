@@ -213,4 +213,21 @@ def performance_matrices(email, date, ratings):
     return {"message": "Performance data updated successfully"}
 
 
+def get_latest_employee_am_data(employee_name):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection = db["Employee_AM"]
+
+    # Fetch the most recent data by sorting on the 'date' field in descending order
+    latest_data = collection.find_one(
+    {"employee_name": employee_name}, 
+    sort=[("date", -1)], 
+    projection={"_id": 0}  # Excludes _id from the result
+    )
+
+    if latest_data:
+        return latest_data  # Return the most recent document
+    else:
+        return {"message": f"No data found for {employee_name}"}
+
 
