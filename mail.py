@@ -28,25 +28,64 @@ def send_alert_email(user_input_PM, red_count,manager,mail):
         print(f"Failed to send email: {e}")
 
 
-def review_performance(user_input_PM,manager,mail):
-   try:
-        performance_params = [
-            user_input_PM["ratings"]["Performance of the Day"],
-            user_input_PM["ratings"]["First Time Quality"],
-            user_input_PM["ratings"]["On-Time Delivery"],
-            user_input_PM["ratings"]["Engagement and Support"]
-        ]
+# def review_performance(user_input_PM,manager,mail):
+#    try:
+#         performance_params = [
+#             user_input_PM["ratings"]["Performance of the Day"],
+#             user_input_PM["ratings"]["First Time Quality"],
+#             user_input_PM["ratings"]["On-Time Delivery"],
+#             user_input_PM["ratings"]["Engagement and Support"]
+#         ]
         
-        red_count = performance_params.count("Red")
-        print(f"Red Count: {red_count}")
+#         red_count = performance_params.count("Red")
+#         print(f"Red Count: {red_count}")
 
-        if red_count >= 3:
-            send_alert_email(user_input_PM, red_count, manager, mail)
-        else:
-            pass  # Explicitly do nothing (optional)
+#         if red_count >= 3:
+#             send_alert_email(user_input_PM, red_count, manager, mail)
+#         else:
+#             pass  # Explicitly do nothing (optional)
 
-   except KeyError as e:
-        print(f"KeyError: Missing field {e}")
+#    except KeyError as e:
+#         print(f"KeyError: Missing field {e}")
 
     
-
+def review_performance(user_input_PM,manager,mail):
+    # ratings = user_input_PM.get("ratings", {})
+ 
+    # if not ratings:
+    #      print("Error: Ratings data is missing in user_input_PM!")
+    #      return
+ 
+    # # Extract performance parameters safely
+    # performance_params = [
+    #     ratings.get("Performance of the Day", "Unknown"),
+    #     ratings.get("First Time Quality", "Unknown"),
+    #     ratings.get("On-Time Delivery", "Unknown"),
+    #     ratings.get("Engagement and Support", "Unknown")
+    # ]   
+    # # Count how many are "Red" (case insensitive)
+    # red_count = sum(1 for value in performance_params if value.lower() == "red")
+    
+    # print("Red Count:", red_count)
+    
+    # # If 3 or more "Red" values, trigger an alert email
+    # if red_count >= 3:
+    #     send_alert_email(user_input_PM, red_count, manager, mail)
+    try:
+         performance_params = [
+             user_input_PM["ratings"]["Performance of the Day"],
+             user_input_PM["ratings"]["First Time Quality"],
+             user_input_PM["ratings"]["On-Time Delivery"],
+             user_input_PM["ratings"]["Engagement and Support"]
+         ]
+         
+         red_count = performance_params.count("Red")
+         print(f"Red Count: {red_count}")
+ 
+         if red_count >= 3:
+             send_alert_email(user_input_PM, red_count, manager, mail)
+         else:
+             pass  # Explicitly do nothing (optional)
+ 
+    except KeyError as e:
+         print(f"KeyError: Missing field {e}")
