@@ -117,55 +117,104 @@ def add_AM_data(data):
     print(f"AM Data inserted with record id: {result.inserted_id}")
 
 
+# def add_PM_data(data):
+#     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+#     db = client["Timesheet"]
+#     collection = db["Employee_PM"]
+
+#     # Extract the first valid hour
+#     first_pm_hour = next(
+#         (hour for hour, details in data.get("hours", {}).items() if details.get("description")),
+#         None
+#     )
+
+#     # Determine shift based on first valid hour
+#     shift = "USD" if first_pm_hour and first_pm_hour.startswith("8") else "IND"
+
+#     # Format hours list
+#     formatted_hours = [
+#         {
+#             "hour": hour,
+#             "task": details["description"],
+#             "progress": details.get("status", "green").lower(),
+#             "comments": details.get("comment", "")
+#         }
+#         for hour, details in data.get("hours", {}).items() if details.get("description")
+#     ]
+
+#     # Create the final formatted document
+#     formatted_data = {
+#         "employee_name": data.get("employee_name"),
+#         "date": data.get("date"),
+#         "hours": formatted_hours,
+#         "shift": shift,  # Add shift field
+#         "country": data.get("country")
+#     }
+
+#     # Insert into MongoDB (Overwrite if employee & date exist)
+#     filter_condition = {
+#         "employee_name": formatted_data["employee_name"],
+#         "date": formatted_data["date"]
+#     }
+#     result = collection.update_one(
+#         filter_condition, 
+#         {"$set": formatted_data}, 
+#         upsert=True  # Overwrite if exists, insert if not
+#     )
+
+#     if result.matched_count > 0:
+#         print(f"Updated existing PM data for {formatted_data['employee_name']} on {formatted_data['date']}")
+#     else:
+#         print(f"Inserted new PM data for {formatted_data['employee_name']} on {formatted_data['date']}")
+
+
 def add_PM_data(data):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_PM"]
+    try:
+       
 
-    # Extract the first valid hour
-    first_pm_hour = next(
-        (hour for hour, details in data.get("hours", {}).items() if details.get("description")),
-        None
-    )
+        # Determine shift based on first valid hour
+        first_pm_hour = next((entry["hour"] for entry in data["hours"] if entry.get("task")), None)
+        shift = "USD" if first_pm_hour and first_pm_hour.startswith("8") else "IND"
 
-    # Determine shift based on first valid hour
-    shift = "USD" if first_pm_hour and first_pm_hour.startswith("8") else "IND"
+        # Format hours list correctly
+        formatted_hours = [
+            {
+                "hour": entry["hour"],
+                "task": entry["task"],
+                "progress": entry.get("progress", "green").lower(),
+                "comments": entry.get("comments", "")
+            }
+            for entry in data["hours"] if entry.get("task")
+        ]
 
-    # Format hours list
-    formatted_hours = [
-        {
-            "hour": hour,
-            "task": details["description"],
-            "progress": details.get("status", "green").lower(),
-            "comments": details.get("comment", "")
+        # Create the final formatted document
+        formatted_data = {
+            "employee_name": data.get("employee_name"),
+            "date": data.get("date"),
+            "hours": formatted_hours,
+            "shift": shift,  # Add shift field
+            "country": data.get("country")
         }
-        for hour, details in data.get("hours", {}).items() if details.get("description")
-    ]
 
-    # Create the final formatted document
-    formatted_data = {
-        "employee_name": data.get("employee_name"),
-        "date": data.get("date"),
-        "hours": formatted_hours,
-        "shift": shift,  # Add shift field
-        "country": data.get("country")
-    }
+        # Save to MongoDB (update if exists, insert if not)
+        filter_condition = {
+            "employee_name": formatted_data["employee_name"],
+            "date": formatted_data["date"]
+        }
+        result = collection.update_one(filter_condition, {"$set": formatted_data}, upsert=True)
 
-    # Insert into MongoDB (Overwrite if employee & date exist)
-    filter_condition = {
-        "employee_name": formatted_data["employee_name"],
-        "date": formatted_data["date"]
-    }
-    result = collection.update_one(
-        filter_condition, 
-        {"$set": formatted_data}, 
-        upsert=True  # Overwrite if exists, insert if not
-    )
+        message = "Timesheet updated successfully" if result.matched_count > 0 else "Timesheet saved successfully"
+        return message
+        
 
-    if result.matched_count > 0:
-        print(f"Updated existing PM data for {formatted_data['employee_name']} on {formatted_data['date']}")
-    else:
-        print(f"Inserted new PM data for {formatted_data['employee_name']} on {formatted_data['date']}")
+    except Exception as e:
+        print("Error:", str(e))  # Debugging print
+        return str(e)
+
+
 
 # def performance_matrices(email, date, ratings):
 #     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
