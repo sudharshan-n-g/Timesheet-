@@ -134,7 +134,7 @@ def add_AM_data(data):
     # Format hours list
     formatted_hours = [
         {"hour": hour, "task": details["description"]}
-        for hour, details in data.get("tasks", {}).items() if details.get("description")
+        for hour, details in data.get("tasks", {}).items() if details["description"]
     ]
 
     # Define filter to check if the entry already exists
@@ -146,10 +146,15 @@ def add_AM_data(data):
     # Define the update operation
     update_data = {
         "$set": {
+            "employee_name": data.get("employee_name"),  # Ensure it doesn't get removed
+            "date": data.get("date"),  # Ensure date stays
             "hours": formatted_hours,
             "shift": shift  # Add or update the shift field
         }
     }
+
+    print(f"Filter Condition: {filter_condition}")  # Debugging
+    print(f"Update Data: {update_data}")  # Debugging
 
     # Update existing entry or insert new one
     result = collection.update_one(filter_condition, update_data, upsert=True)
@@ -159,6 +164,8 @@ def add_AM_data(data):
         print(f"AM Data updated for {data.get('employee_name')} on {data.get('date')}")
     else:
         print(f"AM Data inserted for {data.get('employee_name')} on {data.get('date')}")
+
+    print(f" Matched Count: {result.matched_count}, Modified Count: {result.modified_count}")  # Debugging
 
 # def add_PM_data(data):
 #     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
