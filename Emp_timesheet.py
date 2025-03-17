@@ -36,7 +36,7 @@ def transform_timesheet(data):
 
 
 def employee_login(emp_name,emp_password):
-    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
     db = client["Timesheet"]
     collection = db["Employee_credentials"]
     user = collection.find_one({"Username": emp_name}) 
@@ -68,7 +68,7 @@ def employee_login(emp_name,emp_password):
 #     return manager,mail
 
 def get_manager_details(emp_name):
-    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
     db = client["Timesheet"]
     collection = db["Employee_data"]
 
@@ -118,7 +118,7 @@ def get_manager_details(emp_name):
 
 
 def add_AM_data(data):
-    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
     db = client["Timesheet"]
     collection = db["Employee_AM"]
 
@@ -219,7 +219,7 @@ def add_AM_data(data):
 
 
 def add_PM_data(data):
-    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
     db = client["Timesheet"]
     collection = db["Employee_PM"]
     try:
@@ -283,7 +283,7 @@ def add_PM_data(data):
 #     review_performance(user_input,manager,mail)
 
 def performance_matrices(email, date, ratings):
-    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
     db = client["Timesheet"]
     collection = db["Employee_PM"]
     print(ratings)
@@ -313,7 +313,7 @@ def performance_matrices(email, date, ratings):
 
 
 def get_latest_employee_am_data(employee_name):
-    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
     db = client["Timesheet"]
     collection = db["Employee_AM"]
 
@@ -339,3 +339,5 @@ def get_latest_employee_am_data(employee_name):
 #     "Engagement and Support": "Red"
 # }
 # performance_matrices(email,date,ratings)
+# get_latest_employee_am_data(email)
+# print(get_latest_employee_am_data(email))
