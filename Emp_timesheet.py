@@ -330,3 +330,12 @@ def get_latest_employee_am_data(employee_name):
         return {"message": f"No data found for {employee_name}"}
 
 
+# email = "Simar"
+# date = "2025-03-17"
+# ratings = {
+#     "Performance of the Day": "Green",
+#     "First Time Quality": "Yellow",
+#     "On-Time Delivery": "Red",
+#     "Engagement and Support": "Red"
+# }
+# performance_matrices(email,date,ratings)

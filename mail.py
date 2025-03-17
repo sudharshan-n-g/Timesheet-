@@ -5,10 +5,10 @@ from email.mime.text import MIMEText
 
 
 def send_alert_email(user_input_PM, red_count,manager,mail):
-    sender_email = "prashita.rao1808@gmail.com"
+    sender_email = "timesheetsystem2025@gmail.com"
     receiver_email = mail
     smtp_email = sender_email  # Using the same email for SMTP login
-    smtp_password = "hmot ivxr nnos axxb"  # Use an app password instead of your actual password
+    smtp_password = "uuvy njws mrkn kibh"  # Use an app password instead of your actual password
 
     subject = "⚠ Alert: Employee Performance Issue"
     body = f"Dear {manager},\n\nEmployee {user_input_PM['employee_name']} has {red_count} performance issues marked as RED today.\nPlease review the timesheet for further action.\n\nBest regards,\nTimesheet System"
@@ -27,6 +27,31 @@ def send_alert_email(user_input_PM, red_count,manager,mail):
     except Exception as e:
         print(f"Failed to send email: {e}")
 
+
+# def send_alert_email(user_input_PM, red_count, manager, mail):
+#     sender_email = "timesheet2025@gmail.com"
+#     receiver_email = mail
+#     smtp_server = "smtp.gmail.com"
+#     smtp_port = 587  # Use 465 for SSL if required
+#     smtp_username = sender_email
+#     smtp_password = "tmbt arul svfz rrum"  # Use App Password, not real password
+
+#     subject = "⚠ Alert: Employee Performance Issue"
+#     body = f"Dear {manager},\n\nEmployee {user_input_PM['employee_name']} has {red_count} performance issues marked as RED today.\nPlease review the timesheet for further action.\n\nBest regards,\nTimesheet System"
+
+#     msg = MIMEText(body)
+#     msg["From"] = sender_email
+#     msg["To"] = receiver_email
+#     msg["Subject"] = subject
+
+#     try:
+#         with smtplib.SMTP(smtp_server, smtp_port) as server:
+#             server.starttls()  # Secure the connection
+#             server.login(smtp_username, smtp_password)
+#             server.sendmail(sender_email, receiver_email, msg.as_string())
+#         print("Alert email sent successfully!")
+#     except Exception as e:
+#         print(f"Failed to send email: {e}")
 
 # def review_performance(user_input_PM,manager,mail):
 #    try:
@@ -82,7 +107,7 @@ def review_performance(user_input_PM,manager,mail):
          red_count = performance_params.count("Red")
          print(f"Red Count: {red_count}")
  
-         if red_count >= 3:
+         if red_count >= 1:
              send_alert_email(user_input_PM, red_count, manager, mail)
          else:
              pass  # Explicitly do nothing (optional)
