@@ -37,7 +37,7 @@ def transform_timesheet(data):
 
 
 def employee_login(emp_name,emp_password):
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_credentials"]
     user = collection.find_one({"Username": emp_name}) 
@@ -69,7 +69,7 @@ def employee_login(emp_name,emp_password):
 #     return manager,mail
 
 def get_manager_details(emp_name):
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_data"]
 
@@ -119,7 +119,7 @@ def get_manager_details(emp_name):
 
 
 def add_AM_data(data):
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_AM"]
 
@@ -220,7 +220,7 @@ def add_AM_data(data):
 
 
 def add_PM_data(data):
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_PM"]
     try:
@@ -284,7 +284,7 @@ def add_PM_data(data):
 #     review_performance(user_input,manager,mail)
 
 # def performance_matrices(email, date, ratings):
-#     client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+#     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 #     db = client["Timesheet"]
 #     collection = db["Employee_PM"]
 #     print(ratings)
@@ -315,7 +315,7 @@ def add_PM_data(data):
 """Fix the performace matrix to get the data properly"""
 def performance_matrices(email, date, ratings):
 
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_PM"]
     recent_date = get_most_recent_date(email)
@@ -341,7 +341,7 @@ def performance_matrices(email, date, ratings):
 
 
 def get_latest_employee_am_data(employee_name):
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_AM"]
 
@@ -358,7 +358,7 @@ def get_latest_employee_am_data(employee_name):
         return {"message": f"No data found for {employee_name}"}
 
 # def get_latest_employee_am_data(username,date):
-#     client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+#     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 #     db = client["Timesheet"]
 #     pm_collection = db["Employee_PM"]
 #     am_collection = db["Employee_AM"]
@@ -385,7 +385,7 @@ def get_latest_employee_am_data(employee_name):
     
 
 def get_most_recent_date(employee_name):
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_PM"]
     latest_entry = collection.find_one(

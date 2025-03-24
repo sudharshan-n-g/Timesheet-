@@ -11,7 +11,7 @@ from datetime import datetime
 #     result = collection_emp.insert_one(user_input)
 
 def delete_emp(emp_name):
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_data"]
     collection_AM =db["Employee_AM"]
@@ -25,7 +25,7 @@ def get_emp_data(emp_name,date):
         formatted_date = datetime.strptime(date, "%m-%d-%Y").strftime("%Y-%m-%d")
     except ValueError:
         return {"error": "Invalid date format. Use MM-DD-YYYY."}
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_PM"]
     collection_AM = db["Employee_AM"]
@@ -46,7 +46,7 @@ def get_emp_data(emp_name,date):
 
 
 def add_new_user(user_input):
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection_emp = db["Employee_data"]    
     collection_credential = db["Employee_credentials"]
@@ -56,7 +56,7 @@ def add_new_user(user_input):
 
 
 def show_user():
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_data"]  # Change to your collection name
 
