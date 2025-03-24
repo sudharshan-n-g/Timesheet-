@@ -51,4 +51,3 @@ def get_project_list():
 
     return project_names
 
-# print(retrieve_project())

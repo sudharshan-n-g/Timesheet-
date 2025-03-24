@@ -71,8 +71,6 @@
 #     results = list(collection.find(query, projection))
 #     # print(results)
 #     return results
-# >>>>>>> 0344f3e (Updated code with ProjectManagement)
-
 import json
 from pymongo import MongoClient
 from mail import review_performance

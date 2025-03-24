@@ -872,7 +872,7 @@ def get_most_recent_date(employee_name):
         except Exception as e:
             print("Error parsing date:", e)
     
-    return None  # Return None if no record found
+    return None  # Return None 
 
 
 

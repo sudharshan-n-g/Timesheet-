@@ -93,9 +93,6 @@ def review_performance(user_input_PM,manager,mail):
     
     # print("Red Count:", red_count)
     
-    # # If 3 or more "Red" values, trigger an alert email
-    # if red_count >= 3:
-    #     send_alert_email(user_input_PM, red_count, manager, mail)
     try:
          performance_params = [
              user_input_PM["ratings"]["Performance of the Day"],
