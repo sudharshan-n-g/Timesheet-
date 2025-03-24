@@ -2,14 +2,14 @@ from pymongo import MongoClient
 from collections import OrderedDict
 
 def add_project(project):
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Projects"]
     collection.insert_one(project)
     
 
 # def retrieve_project():
-#     client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+#     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 #     db = client["Timesheet"]
 #     collection = db["Projects"]
 #     project_details = collection.find({}, {"projectNumber": 1, "projectName": 1, "startDate": 1, "endDate": 1, "_id": 0})
@@ -18,7 +18,7 @@ def add_project(project):
 #     return project_details_list
 
 def retrieve_project():
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Projects"]
     project_details = collection.find({}, {"_id": 0, "projectName": 1, "projectNumber": 1, "startDate": 1, "endDate": 1})
@@ -36,7 +36,7 @@ def retrieve_project():
     return ordered_projects
 
 def get_project_list():
-    client = MongoClient("mongodb+srv://timesheetsystem:SinghAutomation2025@cluster0.alcdn.mongodb.net/")
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Projects"]  # Change to your collection name
 
