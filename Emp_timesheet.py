@@ -692,19 +692,18 @@ def add_PM_data(data):
     db = client["Timesheet"]
     collection = db["Employee_PM"]
     try:
-       
-
         # Determine shift based on first valid hour
         first_pm_hour = next((entry["hour"] for entry in data["hours"] if entry.get("task")), None)
         shift = "USD" if first_pm_hour and first_pm_hour.startswith("8") else "IND"
 
-        # Format hours list correctly
+        # Format hours list correctly, now including projectName
         formatted_hours = [
             {
                 "hour": entry["hour"],
                 "task": entry["task"],
                 "progress": entry.get("progress", "green").lower(),
-                "comments": entry.get("comments", "")
+                "comments": entry.get("comments", ""),
+                "projectName": entry.get("projectName", "Unassigned")  # Ensure projectName is included
             }
             for entry in data["hours"] if entry.get("task")
         ]
@@ -714,7 +713,7 @@ def add_PM_data(data):
             "employee_name": data.get("employee_name"),
             "date": data.get("date"),
             "hours": formatted_hours,
-            "shift": shift,  # Add shift field
+            "shift": shift,  
             "country": data.get("country")
         }
 
@@ -727,12 +726,10 @@ def add_PM_data(data):
 
         message = "Timesheet updated successfully" if result.matched_count > 0 else "Timesheet saved successfully"
         return message
-        
 
     except Exception as e:
-        print("Error:", str(e))  # Debugging print
+        print("Error:", str(e))
         return str(e)
-
 
 
 # def performance_matrices(email, date, ratings):
