@@ -690,13 +690,19 @@ def add_AM_data(data):
 def add_PM_data(data):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
-    collection = db["Employee_PM"]
+    collection_pm = db["Employee_PM"]
     try:
+        # Fetch latest AM date if PM date is missing or empty
+        
+        latest_am_date = get_latest_am_date(data.get("employee_name"))
+        print(latest_am_date)
+        data["date"] = latest_am_date if latest_am_date else "No AM data found"
+
         # Determine shift based on first valid hour
         first_pm_hour = next((entry["hour"] for entry in data["hours"] if entry.get("task")), None)
         shift = "USD" if first_pm_hour and first_pm_hour.startswith("8") else "IND"
 
-        # Format hours list correctly, now including projectName
+        # Format hours list correctly
         formatted_hours = [
             {
                 "hour": entry["hour"],
@@ -713,7 +719,7 @@ def add_PM_data(data):
             "employee_name": data.get("employee_name"),
             "date": data.get("date"),
             "hours": formatted_hours,
-            "shift": shift,  
+            "shift": shift,
             "country": data.get("country")
         }
 
@@ -722,15 +728,13 @@ def add_PM_data(data):
             "employee_name": formatted_data["employee_name"],
             "date": formatted_data["date"]
         }
-        result = collection.update_one(filter_condition, {"$set": formatted_data}, upsert=True)
+        result = collection_pm.update_one(filter_condition, {"$set": formatted_data}, upsert=True)
 
         message = "Timesheet updated successfully" if result.matched_count > 0 else "Timesheet saved successfully"
         return message
-
+    
     except Exception as e:
-        print("Error:", str(e))
-        return str(e)
-
+        return f"Error: {str(e)}"
 
 # def performance_matrices(email, date, ratings):
 #     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -871,6 +875,15 @@ def get_most_recent_date(employee_name):
     
     return None  # Return None 
 
+def get_latest_am_date(employee_name):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection_am = db["Employee_AM"]
+    latest_am_entry = collection_am.find_one(
+        {"employee_name": employee_name},
+        sort=[("date", -1)]  # Sort by date in descending order (latest first)
+    )
+    return latest_am_entry["date"] if latest_am_entry else None
 
 
 

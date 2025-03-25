@@ -5,7 +5,7 @@ from Emp_info import add_emp_info
 from flask_cors import CORS
 import logging
 from admin import add_new_user,delete_emp,get_emp_data,show_user
-from Project import retrieve_project,add_project, get_project_list
+from Project import retrieve_project,add_project, get_project_list, get_project_hours_pm
 #from pyngrok import ngrok
 import os
 
@@ -159,6 +159,20 @@ def get_projectslist():
     try:
         project_names = get_project_list()
         return jsonify({"success": True, "data": project_names})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+    
+@application.route("/api/projects/<string:project_id>/details", methods=["GET"])
+def get_project_details(project_id):
+    try:
+        # Fetch project details
+        members_list,project = get_project_hours_pm(project_id)
+        return jsonify({
+            "success": True,
+            "project": project,
+            "members": members_list
+        })
+
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
