@@ -166,11 +166,12 @@ def get_projectslist():
 def get_project_details(project_id):
     try:
         # Fetch project details
-        project,members_list = get_project_hours_pm(project_id)
+        project,members_list,total_hours = get_project_hours_pm(project_id)
         return jsonify({
             "success": True,
             "project": project,
-            "members": members_list
+            "members": members_list,
+            "total_hours": total_hours
         })
 
     except Exception as e:

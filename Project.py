@@ -62,7 +62,7 @@ def get_project_detail(project_name):
     return data
 
 def get_designation(employee_name):
-    print(employee_name)
+    # print(employee_name)
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Employee_data"]
@@ -116,11 +116,10 @@ def get_project_hours_pm(project_name):
         # Calculate total hours spent on the project
         total_project_hours = sum(emp["hours"] for emp in employees_list)
 
-        employees =  {
-            "employees": employees_list,
-            "total_hours": total_project_hours
-        }
-        return project[0],employees
+        # print(total_project_hours)
+        # print(employees_list)
+        return project[0],employees_list,total_project_hours
 
     except Exception as e:
         return {"error": str(e)}
+    
