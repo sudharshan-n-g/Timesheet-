@@ -109,7 +109,7 @@ def get_project_hours_pm(project_name):
         #    "employees": employees_list,
         #    "total_project_hours": total_project_hours
         #}
-        employees_list,total_project_hours
+        return employees_list,total_project_hours
 
     except Exception as e:
         return {"error": str(e)}
