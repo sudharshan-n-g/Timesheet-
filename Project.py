@@ -52,6 +52,15 @@ def retrieve_project():
 
     return ordered_projects
 
+def get_project_detail(project_name):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection = db["Projects"]
+
+    data = list(collection.find({"projectName":project_name},{"_id":0}))
+
+    return data
+
 def get_designation(employee_name):
     print(employee_name)
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
@@ -97,19 +106,21 @@ def get_project_hours_pm(project_name):
             {
                 "employee_name": emp["_id"],
                 "designation": get_designation(emp["_id"]),
-                "total_hours": emp["total_hours"]
+                "hours": emp["total_hours"]
             }
             for emp in pm_data
         ]
+        
+        project = get_project_detail(project_name)
 
         # Calculate total hours spent on the project
-        total_project_hours = sum(emp["total_hours"] for emp in employees_list)
+        total_project_hours = sum(emp["hours"] for emp in employees_list)
 
-        #return {
-        #    "employees": employees_list,
-        #    "total_project_hours": total_project_hours
-        #}
-        return employees_list,total_project_hours
+        employees =  {
+            "employees": employees_list,
+            "total_hours": total_project_hours
+        }
+        return project[0],employees
 
     except Exception as e:
         return {"error": str(e)}
