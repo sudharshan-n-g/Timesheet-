@@ -187,14 +187,14 @@ def get_am_timesheet(username, start_date,end_date):
     data = get_am_timesheet_between_dates(username,start_date,end_date)
     return jsonify({"message": "Success", "data": data})
 
-@application.route("/api/timesheet/am/<username>/<start_date>/<end_date>", methods=["GET"])
+@application.route("/api/timesheet/pm/<username>/<start_date>/<end_date>", methods=["GET"])
 def get_pm_timesheet(username,start_date,end_date):
     data = get_pm_timesheet_between_dates(username,start_date,end_date)
     return jsonify({"message": "Success", "data": data})
 
 @application.route("/api/matrices/<matrixUsername>/<matrixStartDate>/<matrixEndDate>", methods=["GET"])
-def get_performance(Username,StartDate,EndDate):
-    data = get_performance_between_dates(Username,StartDate,EndDate)
+def get_performance(matrixUsername,matrixStartDate,matrixEndDate):
+    data = get_performance_between_dates(matrixUsername,matrixStartDate,matrixEndDate)
     return jsonify({"message": "Success", "data": data})
 
 if __name__ == "__main__":
