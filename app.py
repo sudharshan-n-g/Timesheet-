@@ -4,7 +4,7 @@ from Emp_timesheet import add_PM_data, add_AM_data, employee_login,performance_m
 from Emp_info import add_emp_info
 from flask_cors import CORS
 import logging
-from admin import add_new_user,delete_emp,get_emp_data,show_user
+from admin import add_new_user,delete_emp,get_emp_data,show_user, get_timesheet_between_dates
 from Project import retrieve_project,add_project, get_project_list, get_project_hours_pm
 #from pyngrok import ngrok
 import os
@@ -95,9 +95,14 @@ def add_employee():
     add_emp_info(emp_name)
     return jsonify({"message": "Employee added successfully"})
 
-@application.route("/api/timesheet/admin/<string:username>/<string:date>", methods=["GET"])
-def get_timesheet(username, date):
-    data = get_emp_data(username,date)
+# @application.route("/api/timesheet/admin/<string:username>/<string:date>", methods=["GET"])
+# def get_timesheet(username, date):
+#     data = get_emp_data(username,date)
+#     return jsonify({"message": "Employee data fetched successfully", "data": data})
+
+@application.route("/api/timesheet/admin/<string:username>/<string:startDate>/<string:endDate>", methods=["GET"])
+def get_timesheet(username, startDate,endDate):
+    data = get_timesheet_between_dates(username,startDate,endDate)
     return jsonify({"message": "Employee data fetched successfully", "data": data})
 
 # @application.route("/api/timesheet/user/<string:username>/<string:date>", methods=["GET"])

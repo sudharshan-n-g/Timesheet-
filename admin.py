@@ -142,3 +142,59 @@ def show_user():
     results = list(collection.find(query, projection))
     # print(results)
     return results
+
+def convert_date_format(data):
+            for doc in data:
+                if "date" in doc:
+                    doc["date"] = datetime.strptime(doc["date"], "%Y-%m-%d").strftime("%m-%d-%Y")
+            return data
+
+def get_timesheet_between_dates(emp_name,startDate,endDate):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection_PM = db["Employee_PM"]
+    collection_AM = db["Employee_AM"]
+    try:
+        # Convert input date format from MM-DD-YYYY to YYYY-MM-DD
+        formatted_startDate = datetime.strptime(startDate, "%m-%d-%Y").strftime("%Y-%m-%d")
+        formatted_endDate = datetime.strptime(endDate, "%m-%d-%Y").strftime("%Y-%m-%d")
+
+        # Convert string dates to datetime objects
+        start = datetime.strptime(formatted_startDate, "%Y-%m-%d")
+        end = datetime.strptime(formatted_endDate, "%Y-%m-%d")
+
+        # Check if start_date is after end_date
+        if start > end:
+            return {"error": "Start date cannot be after end date."}
+
+        # MongoDB query (convert stored string dates to datetime)
+        query = {
+            "$expr": {
+                "$and": [
+                    {"$gte": [{"$dateFromString": {"dateString": "$date"}}, start]},
+                    {"$lte": [{"$dateFromString": {"dateString": "$date"}}, end]}
+                ]
+            },
+            "employee_name": emp_name  # Filter by employee name
+        }
+
+        # Fetch PM and AM data
+        emp_data_PM = list(collection_PM.find(query, {"_id": 0}))
+        emp_data_AM = list(collection_AM.find(query, {"_id": 0}))
+        
+        emp_data_PM = convert_date_format(emp_data_PM)
+        emp_data_AM = convert_date_format(emp_data_AM)
+
+
+        # If no data found
+        if not emp_data_PM and not emp_data_AM:
+            return {"message": "No data found for the given date range."}
+
+        # Return the combined result
+        return {"PM": emp_data_PM, "AM": emp_data_AM}
+
+    except ValueError:
+        return {"error": "Invalid date format. Use MM-DD-YYYY."}
+
+    except Exception as e:
+        return {"error": f"An unexpected error occurred: {str(e)}"}
