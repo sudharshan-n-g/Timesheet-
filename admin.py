@@ -198,3 +198,152 @@ def get_timesheet_between_dates(emp_name,startDate,endDate):
 
     except Exception as e:
         return {"error": f"An unexpected error occurred: {str(e)}"}
+
+def get_pm_timesheet_between_dates(emp_name,startDate,endDate):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection_PM = db["Employee_PM"]
+    try:
+        # Convert input date format from MM-DD-YYYY to YYYY-MM-DD
+        formatted_startDate = datetime.strptime(startDate, "%m-%d-%Y").strftime("%Y-%m-%d")
+        formatted_endDate = datetime.strptime(endDate, "%m-%d-%Y").strftime("%Y-%m-%d")
+
+        # Convert string dates to datetime objects
+        start = datetime.strptime(formatted_startDate, "%Y-%m-%d")
+        end = datetime.strptime(formatted_endDate, "%Y-%m-%d")
+
+        # Check if start_date is after end_date
+        if start > end:
+            return {"error": "Start date cannot be after end date."}
+
+        # MongoDB query (convert stored string dates to datetime)
+        query = {
+            "$expr": {
+                "$and": [
+                    {"$gte": [{"$dateFromString": {"dateString": "$date"}}, start]},
+                    {"$lte": [{"$dateFromString": {"dateString": "$date"}}, end]}
+                ]
+            },
+            "employee_name": emp_name  # Filter by employee name
+        }
+
+        # Fetch AM data
+        emp_data_PM = list(collection_PM.find(query, {"_id": 0,"ratings":0}))
+        
+        
+        emp_data_PM = convert_date_format(emp_data_PM)
+
+        print(emp_data_PM)
+
+        # If no data found
+        if not emp_data_PM:
+            return {"message": "No data found for the given date range."}
+
+        # Return the combined result
+        return emp_data_PM
+
+    except ValueError:
+        return {"error": "Invalid date format. Use MM-DD-YYYY."}
+
+    except Exception as e:
+        return {"error": f"An unexpected error occurred: {str(e)}"}
+    
+
+def get_am_timesheet_between_dates(emp_name,startDate,endDate):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection_AM = db["Employee_AM"]
+    try:
+        # Convert input date format from MM-DD-YYYY to YYYY-MM-DD
+        formatted_startDate = datetime.strptime(startDate, "%m-%d-%Y").strftime("%Y-%m-%d")
+        formatted_endDate = datetime.strptime(endDate, "%m-%d-%Y").strftime("%Y-%m-%d")
+
+        # Convert string dates to datetime objects
+        start = datetime.strptime(formatted_startDate, "%Y-%m-%d")
+        end = datetime.strptime(formatted_endDate, "%Y-%m-%d")
+
+        # Check if start_date is after end_date
+        if start > end:
+            return {"error": "Start date cannot be after end date."}
+
+        # MongoDB query (convert stored string dates to datetime)
+        query = {
+            "$expr": {
+                "$and": [
+                    {"$gte": [{"$dateFromString": {"dateString": "$date"}}, start]},
+                    {"$lte": [{"$dateFromString": {"dateString": "$date"}}, end]}
+                ]
+            },
+            "employee_name": emp_name  # Filter by employee name
+        }
+
+        # Fetch AM data
+        emp_data_AM = list(collection_AM.find(query, {"_id": 0,"ratings":0}))
+        
+        
+        emp_data_AM = convert_date_format(emp_data_AM)
+
+        
+
+        # If no data found
+        if not emp_data_AM:
+            return {"message": "No data found for the given date range."}
+
+        # Return the combined result
+        return emp_data_AM
+
+    except ValueError:
+        return {"error": "Invalid date format. Use MM-DD-YYYY."}
+
+    except Exception as e:
+        return {"error": f"An unexpected error occurred: {str(e)}"}
+
+def get_performance_between_dates(emp_name,startDate,endDate):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection_PM = db["Employee_PM"]
+    try:
+        # Convert input date format from MM-DD-YYYY to YYYY-MM-DD
+        formatted_startDate = datetime.strptime(startDate, "%m-%d-%Y").strftime("%Y-%m-%d")
+        formatted_endDate = datetime.strptime(endDate, "%m-%d-%Y").strftime("%Y-%m-%d")
+
+        # Convert string dates to datetime objects
+        start = datetime.strptime(formatted_startDate, "%Y-%m-%d")
+        end = datetime.strptime(formatted_endDate, "%Y-%m-%d")
+
+        # Check if start_date is after end_date
+        if start > end:
+            return {"error": "Start date cannot be after end date."}
+        print(start,end)
+        # MongoDB query (convert stored string dates to datetime)
+        query = {
+            "$expr": {
+                "$and": [
+                    {"$gte": [{"$dateFromString": {"dateString": "$date"}}, start]},
+                    {"$lte": [{"$dateFromString": {"dateString": "$date"}}, end]}
+                ]
+            },
+            "employee_name": emp_name  # Filter by employee name
+        }
+
+        # Fetch AM data
+        emp_data_PM = list(collection_PM.find(query, {"_id": 0,"hours":0}))
+        
+        
+        emp_data_PM = convert_date_format(emp_data_PM)
+
+        #for emp in emp_data_PM:
+        #    print(emp)
+
+        # If no data found
+        if not emp_data_PM:
+            return {"message": "No data found for the given date range."}
+
+        # Return the combined result
+        return emp_data_PM
+
+    except ValueError:
+        return {"error": "Invalid date format. Use MM-DD-YYYY."}
+
+    except Exception as e:
+        return {"error": f"An unexpected error occurred: {str(e)}"}
