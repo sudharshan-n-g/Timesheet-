@@ -211,6 +211,7 @@ def get_user(email):
     user = user_details(email)
     if not user:
         return jsonify({"error": "User not found"}), 404
+    return jsonify(user)
 
 @application.route("/api/projects/delete", methods=["POST"])
 def delete_project_from_db():
