@@ -347,3 +347,10 @@ def get_performance_between_dates(emp_name,startDate,endDate):
 
     except Exception as e:
         return {"error": f"An unexpected error occurred: {str(e)}"}
+
+def user_details(name):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection = db["Employee_data"]
+    result = list(collection.find({"name":name},{"_id":0}))
+    return result

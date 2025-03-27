@@ -4,8 +4,8 @@ from Emp_timesheet import add_PM_data, add_AM_data, employee_login,performance_m
 from Emp_info import add_emp_info
 from flask_cors import CORS
 import logging
-from admin import add_new_user,delete_emp,get_emp_data,show_user, get_timesheet_between_dates, get_am_timesheet_between_dates,get_pm_timesheet_between_dates,get_performance_between_dates
-from Project import retrieve_project,add_project, get_project_list, get_project_hours_pm
+from admin import add_new_user,delete_emp,get_emp_data,show_user, get_timesheet_between_dates, get_am_timesheet_between_dates,get_pm_timesheet_between_dates,get_performance_between_dates, user_details
+from Project import retrieve_project,add_project, get_project_list, get_project_hours_pm, get_project_detail, delete_project
 #from pyngrok import ngrok
 import os
 
@@ -139,7 +139,7 @@ def get_user_timesheet(username, date):
     
     
 @application.route("/api/timesheet/showUser", methods=["GET"])
-def user_details():
+def all_user_details():
     data = show_user()
     return jsonify({"message": "Employee list fetched successfully", "data": data})
 
@@ -196,6 +196,34 @@ def get_pm_timesheet(username,start_date,end_date):
 def get_performance(matrixUsername,matrixStartDate,matrixEndDate):
     data = get_performance_between_dates(matrixUsername,matrixStartDate,matrixEndDate)
     return jsonify({"message": "Success", "data": data})
+
+@application.route("/api/projects/search", methods=["POST"])
+def search_project():
+    data = request.json
+    project = get_project_detail(data["projectName"],data["projectNumber"])
+    if not project:
+        return jsonify({"error": "Project not found"}), 404
+    
+    return jsonify(project)
+
+@application.route("/api/users/email/<email>", methods=["POST"])
+def get_user(email):
+    user = user_details(email)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+@application.route("/api/projects/delete", methods=["POST"])
+def delete_project_from_db():
+    try:
+        data = request.json
+        result = delete_project(data["projectNumber"],data["projectName"])
+        if result.deleted_count == 0:
+                return jsonify({"message": "Project not found."}), 404
+    
+        return jsonify({"message": "Project removed successfully"}), 200
+    except Exception as e:
+        return jsonify({"message": f"Error: {str(e)}"}), 500
+    
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))  

@@ -52,12 +52,12 @@ def retrieve_project():
 
     return ordered_projects
 
-def get_project_detail(project_name):
+def get_project_detail(project_name,projectNumber):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Projects"]
 
-    data = list(collection.find({"projectName":project_name},{"_id":0}))
+    data = list(collection.find({"projectName":project_name,"projectNumber":projectNumber},{"_id":0}))
 
     return data
 
@@ -123,3 +123,16 @@ def get_project_hours_pm(project_name):
     except Exception as e:
         return {"error": str(e)}
     
+def delete_project(project_number,project_name):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection = db["Projects"]
+    result = collection.delete_one({"projectName":project_name})
+    return result
+
+def delete_project(project_number,project_name):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection = db["Projects"]
+    result = collection.delete_one({"projectName":project_name})
+    return result
