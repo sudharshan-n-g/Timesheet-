@@ -52,12 +52,23 @@ def retrieve_project():
 
     return ordered_projects
 
+# def get_project_detail(project_name,projectNumber):
+#     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+#     db = client["Timesheet"]
+#     collection = db["Projects"]
+
+#     data = list(collection.find({"projectName":project_name,"projectNumber":projectNumber},{"_id":0}))
+
+#     return data
+
 def get_project_detail(project_name,projectNumber):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection = db["Projects"]
 
     data = list(collection.find({"projectName":project_name,"projectNumber":projectNumber},{"_id":0}))
+    data[0]["startDate"] = format_date(data[0]["startDate"])
+    data[0]["endDate"] = format_date(data[0]["endDate"])
 
     return data
 

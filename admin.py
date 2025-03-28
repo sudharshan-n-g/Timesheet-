@@ -89,7 +89,7 @@ def delete_emp(emp_name):
     collection = db["Employee_data"]
     collection_AM =db["Employee_AM"]
     collection_PM =db["Employee_PM"]
-    collection.delete_one({"email": emp_name})
+    collection.delete_one({"name": emp_name})
     collection_AM.delete_many({"employee_name": emp_name})
     collection_PM.delete_many({"employee_name": emp_name})
 
@@ -370,5 +370,17 @@ def update_user(name,updated_data):
         return {"error": "No updates applied"}
     else:
         return {"message": "User updated successfully"}
+    
+
+data = {
+  "name": "Sudharshan",
+  "email": "sudharshan.ng@singhautomation.com",
+  "role": "user",
+  "country": "India",
+  "manager": "Soorya",
+  "manager_email": "soorya@singhus.com",
+  "designation": "Machine Vision Engineer"
+}
+update_user("Sudharshan",data)
 
 # user_details("Sudharshan")
