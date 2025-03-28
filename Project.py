@@ -75,10 +75,61 @@ def get_designation(employee_name):
     return designation
 
 
+# def get_project_hours_pm(project_name):
+#     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+#     db = client["Timesheet"]
+#     collection_pm = db["Employee_PM"]
+
+
+#     try:
+#         pipeline = [
+#             {
+#                 "$unwind": "$hours"  # Flatten the hours array
+#             },
+#             {
+#                 "$match": {
+#                     "hours.projectName": project_name  # Filter by project
+#                 }
+#             },
+#             {
+#                 "$group": {
+#                     "_id": "$employee_name",  # Group by employee
+#                     "total_hours": {"$sum": 1}  # Count total hours spent
+#                 }
+#             }
+#         ]
+
+#         pm_data = list(collection_pm.aggregate(pipeline))
+
+#         # List of employees and their hours
+#         employees_list = [
+#             {
+#                 "employee_name": emp["_id"],
+#                 "designation": get_designation(emp["_id"]),
+#                 "hours": emp["total_hours"]
+#             }
+#             for emp in pm_data
+#         ]
+        
+#         project = get_project_detail(project_name)
+
+#         # Calculate total hours spent on the project
+#         total_project_hours = sum(emp["hours"] for emp in employees_list)
+
+#         # print(total_project_hours)
+#         # print(employees_list)
+#         return project[0],employees_list,total_project_hours
+
+#     except Exception as e:
+#         return {"error": str(e)}
+
 def get_project_hours_pm(project_name):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
     collection_pm = db["Employee_PM"]
+    collection = db["Projects"]
+
+    
 
 
     try:
@@ -111,18 +162,20 @@ def get_project_hours_pm(project_name):
             for emp in pm_data
         ]
         
-        project = get_project_detail(project_name)
+        project = list(collection.find({"projectName":project_name},{"_id":0}))
 
         # Calculate total hours spent on the project
         total_project_hours = sum(emp["hours"] for emp in employees_list)
 
-        # print(total_project_hours)
-        # print(employees_list)
-        return project[0],employees_list,total_project_hours
+        employees =  {
+            "employees": employees_list,
+            "total_hours": total_project_hours
+        }
+        return project[0],employees
 
     except Exception as e:
         return {"error": str(e)}
-    
+
 def delete_project(project_number,project_name):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
