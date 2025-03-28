@@ -128,10 +128,6 @@ def get_project_hours_pm(project_name):
     db = client["Timesheet"]
     collection_pm = db["Employee_PM"]
     collection = db["Projects"]
-
-    
-
-
     try:
         pipeline = [
             {
@@ -167,15 +163,13 @@ def get_project_hours_pm(project_name):
         # Calculate total hours spent on the project
         total_project_hours = sum(emp["hours"] for emp in employees_list)
 
-        employees =  {
-            "employees": employees_list,
-            "total_hours": total_project_hours
-        }
-        return project[0],employees
+        
+        return project[0],employees_list,total_project_hours
 
     except Exception as e:
         return {"error": str(e)}
 
+
 def delete_project(project_number,project_name):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
@@ -189,3 +183,5 @@ def delete_project(project_number,project_name):
     collection = db["Projects"]
     result = collection.delete_one({"projectName":project_name})
     return result
+
+# print(get_project_hours_pm("Timesheet"))
