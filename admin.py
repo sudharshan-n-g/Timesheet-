@@ -356,4 +356,19 @@ def user_details(name):
     print(result)
     return result
 
-user_details("Sudharshan")
+def update_user(name,updated_data):
+    client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+    db = client["Timesheet"]
+    collection = db["Employee_data"]
+    user = collection.find_one({"name": name})
+    if not user:
+            return {"error": "User not found"}
+    
+    result = collection.update_one({"name": name}, {"$set": updated_data})
+
+    if result.modified_count == 0:
+        return {"error": "No updates applied"}
+    else:
+        return {"message": "User updated successfully"}
+
+# user_details("Sudharshan")

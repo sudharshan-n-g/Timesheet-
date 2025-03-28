@@ -4,8 +4,8 @@ from Emp_timesheet import add_PM_data, add_AM_data, employee_login,performance_m
 from Emp_info import add_emp_info
 from flask_cors import CORS
 import logging
-from admin import add_new_user,delete_emp,get_emp_data,show_user, get_timesheet_between_dates, get_am_timesheet_between_dates,get_pm_timesheet_between_dates,get_performance_between_dates, user_details
-from Project import retrieve_project,add_project, get_project_list, get_project_hours_pm, get_project_detail, delete_project
+from admin import add_new_user,delete_emp,get_emp_data,show_user, get_timesheet_between_dates, get_am_timesheet_between_dates,get_pm_timesheet_between_dates,get_performance_between_dates, user_details, update_user
+from Project import retrieve_project,add_project, get_project_list, get_project_hours_pm, get_project_detail, delete_project, update_project
 #from pyngrok import ngrok
 import os
 
@@ -234,6 +234,29 @@ def get_user(email):
         return jsonify({"error": "User not found"}), 404
 
     return jsonify(user), 200
+
+@application.route("/api/users/email/<string:email>", methods=["PUT"])
+def edit_user(email):
+    data = request.json
+    result = update_user(email,data)
+    return jsonify(result)
+
+#Update the existing project
+@application.route("/api/projects/update", methods=["POST"])
+def edit_project():
+    try:
+        data = request.json
+        search_criteria = data.get("search", {})
+        update_data = data.get("update", {})
+
+        if not search_criteria or not update_data:
+            return jsonify({"error": "Invalid request, missing search or update fields"}), 400
+
+        result = update_project(search_criteria,update_data)
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))  

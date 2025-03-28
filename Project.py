@@ -177,11 +177,18 @@ def delete_project(project_number,project_name):
     result = collection.delete_one({"projectName":project_name})
     return result
 
-def delete_project(project_number,project_name):
+def update_project(query,updated_data):
     client = MongoClient("mongodb+srv://prashitar:Vision123@cluster0.v7ckx.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
     db = client["Timesheet"]
-    collection = db["Projects"]
-    result = collection.delete_one({"projectName":project_name})
-    return result
+    projects_collection = db["Projects"]
+    project = projects_collection.find_one(query)
+    print(query)
+    if not project:
+        return {"error": "Project not found"}
+    # Update project data
+    result = projects_collection.update_one(query, {"$set": updated_data})
+    if result.modified_count == 0:
+        return {"error": "No updates applied"}
+    return {"message": "Project updated successfully"}
 
 # print(get_project_hours_pm("Timesheet"))
