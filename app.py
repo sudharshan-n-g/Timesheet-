@@ -206,12 +206,12 @@ def search_project():
     
     return jsonify(project)
 
-@application.route("/api/users/email/<email>", methods=["POST"])
-def get_user(email):
-    user = user_details(email)
-    if not user:
-        return jsonify({"error": "User not found"}), 404
-    return jsonify(user)
+# @application.route("/api/users/email/<email>", methods=["POST"])
+# def get_user(email):
+#     user = user_details(email)
+#     if not user:
+#         return jsonify({"error": "User not found"}), 404
+#     return jsonify(user)
 
 @application.route("/api/projects/delete", methods=["POST"])
 def delete_project_from_db():
@@ -224,7 +224,16 @@ def delete_project_from_db():
         return jsonify({"message": "Project removed successfully"}), 200
     except Exception as e:
         return jsonify({"message": f"Error: {str(e)}"}), 500
-    
+
+#fetch user details
+@application.route("/api/users/email/<email>", methods=["GET"])
+def get_user(email):
+    user = user_details(email)  # Fetch user from DB
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    return jsonify(user), 200
 
 if __name__ == "__main__":
     port = int(os.getenv("PORT", 8000))  

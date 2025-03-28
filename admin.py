@@ -353,4 +353,7 @@ def user_details(name):
     db = client["Timesheet"]
     collection = db["Employee_data"]
     result = list(collection.find({"name":name},{"_id":0}))
+    print(result)
     return result
+
+user_details("Sudharshan")
